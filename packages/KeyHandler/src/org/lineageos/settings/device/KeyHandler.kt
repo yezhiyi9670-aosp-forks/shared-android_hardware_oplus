@@ -99,24 +99,45 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         }
     }
 
+    private fun getModeForPosition(position: Int): Int? {
+        return when (position) {
+            POSITION_TOP -> sharedPreferences.getString(ALERT_SLIDER_TOP_KEY, "0")!!.toInt()
+            POSITION_MIDDLE ->
+                sharedPreferences.getString(ALERT_SLIDER_MIDDLE_KEY, "1")!!.toInt()
+            POSITION_BOTTOM ->
+                sharedPreferences.getString(ALERT_SLIDER_BOTTOM_KEY, "2")!!.toInt()
+            else -> return null
+        }
+    }
+
     private fun handleMode(position: Int, firstRun: Boolean) {
         val muteMedia = sharedPreferences.getBoolean(MUTE_MEDIA_WITH_SILENT, false)
         val showDialog = sharedPreferences.getBoolean(SHOW_DIALOG, true)
 
-        val mode =
-            when (position) {
-                POSITION_TOP -> sharedPreferences.getString(ALERT_SLIDER_TOP_KEY, "0")!!.toInt()
-                POSITION_MIDDLE ->
-                    sharedPreferences.getString(ALERT_SLIDER_MIDDLE_KEY, "1")!!.toInt()
-                POSITION_BOTTOM ->
-                    sharedPreferences.getString(ALERT_SLIDER_BOTTOM_KEY, "2")!!.toInt()
-                else -> return
+        val mode = getModeForPosition(position)
+        if (mode == null) {
+            return
+        }
+
+        var zenModesInvolved = false
+        for (otherPosition in listOf(POSITION_TOP, POSITION_MIDDLE, POSITION_BOTTOM)) {
+            when (getModeForPosition(otherPosition)) {
+                ZEN_PRIORITY_ONLY,
+                ZEN_TOTAL_SILENCE,
+                ZEN_ALARMS_ONLY -> {
+                    zenModesInvolved = true
+                    break
+                }
+                else -> { }
             }
+        }
 
         executorService.submit {
             when (mode) {
                 AudioManager.RINGER_MODE_SILENT -> {
-                    setZenMode(Settings.Global.ZEN_MODE_OFF)
+                    if (zenModesInvolved) {
+                        setZenMode(Settings.Global.ZEN_MODE_OFF)
+                    }
                     audioManager.ringerModeInternal = mode
                     if (muteMedia) {
                         audioManager.adjustVolume(AudioManager.ADJUST_MUTE, 0)
@@ -125,7 +146,9 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                 }
                 AudioManager.RINGER_MODE_VIBRATE,
                 AudioManager.RINGER_MODE_NORMAL -> {
-                    setZenMode(Settings.Global.ZEN_MODE_OFF)
+                    if (zenModesInvolved) {
+                        setZenMode(Settings.Global.ZEN_MODE_OFF)
+                    }
                     audioManager.ringerModeInternal = mode
                     if (muteMedia && wasMuted) {
                         audioManager.adjustVolume(AudioManager.ADJUST_UNMUTE, 0)
