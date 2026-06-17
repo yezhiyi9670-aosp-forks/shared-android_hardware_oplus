@@ -6,7 +6,7 @@
 <resources>
     <string name="esim_settings_title">ڕێکخستنەکانی eSIM</string>
     <string name="esim_toggle_title">eSIM</string>
-    <string name="esim_toggle_summary">داگرتن و چالاککردنی پڕۆفایلی دابینکەر بۆ بەکارهێنانی سیمکارتی مەجازی</string>
+    <string name="esim_toggle_summary">داگرتن و چالاککردنی پڕۆفایلی دابینکەر بۆ بەکارهێنانی سیمکارتی گریمانەیی</string>
     <string name="esim_toggle_dialog">ئەگەر eSIM چالاک بکەیت، SIM 2 ناچالاک دەبێت. هەر چالاکی دەکەیت؟</string>
     <string name="esim_toggle_dialog_cancel">پاشگەزبوونەوە</string>
     <string name="esim_toggle_dialog_ok">چالاککردن</string>
