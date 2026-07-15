@@ -16,12 +16,15 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.media.AudioManager
 import android.view.Gravity
 import android.view.Surface
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -165,6 +168,19 @@ class AlertSliderDialog(private val context: Context) :
                 override fun onAnimationStart(animation: Animator) {
                     isAnimating = true
                     applyUiMode(ringerMode)
+                    val transition =
+                        TransitionDrawable(
+                            arrayOf(
+                                frameView.background,
+                                context.resources.getDrawable(
+                                    backgroundFor(rotation, position, flip),
+                                    null,
+                                ),
+                            )
+                        )
+                    frameView.background = transition
+                    transition.setCrossFadeEnabled(true)
+                    transition.startTransition(30)
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
@@ -189,6 +205,8 @@ class AlertSliderDialog(private val context: Context) :
                 KeyHandler.ZEN_PRIORITY_ONLY -> R.drawable.ic_notifications_alert
                 KeyHandler.ZEN_TOTAL_SILENCE -> R.drawable.ic_notifications_silence
                 KeyHandler.ZEN_ALARMS_ONLY -> R.drawable.ic_alarm
+                KeyHandler.TORCH_ON -> R.drawable.ic_torch_on
+                KeyHandler.TORCH_OFF -> R.drawable.ic_torch_off
                 else -> R.drawable.ic_info
             }
         )
@@ -201,6 +219,8 @@ class AlertSliderDialog(private val context: Context) :
                 KeyHandler.ZEN_PRIORITY_ONLY -> R.string.alert_slider_mode_dnd_priority_only
                 KeyHandler.ZEN_TOTAL_SILENCE -> R.string.alert_slider_mode_dnd_total_silence
                 KeyHandler.ZEN_ALARMS_ONLY -> R.string.alert_slider_mode_dnd_alarms_only
+                KeyHandler.TORCH_ON -> R.string.alert_slider_mode_torch_on
+                KeyHandler.TORCH_OFF -> R.string.alert_slider_mode_torch_off
                 else -> R.string.alert_slider_mode_none
             }
         )
@@ -253,6 +273,27 @@ class AlertSliderDialog(private val context: Context) :
                 }
             else -> base(position) // ROTATION_0 / ROTATION_180
         }
+    }
+
+    override fun show() {
+        dialogView.alpha = 0f
+        super.show()
+        dialogView
+            .animate()
+            .alpha(1f)
+            .setDuration(200)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+    }
+
+    override fun dismiss() {
+        dialogView
+            .animate()
+            .alpha(0f)
+            .setDuration(200)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction { super.dismiss() }
+            .start()
     }
 
     companion object {

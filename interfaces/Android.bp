@@ -4,6 +4,31 @@ hidl_package_root {
 }
 
 aidl_interface {
+    name: "vendor.oplus.hardware.appradioaidl",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/appradioaidl/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
     name: "vendor.oplus.hardware.biometrics.fingerprintpay",
     system_ext_specific: true,
     odm_available: true,
@@ -18,6 +43,114 @@ aidl_interface {
         },
         java: {
             sdk_version: "module_current",
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.camera.aon",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/camera/aon/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.camera_rfi",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/camera_rfi/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+        {
+            version: "2",
+            imports: [],
+        },
+        {
+            version: "3",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.cameraextension",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/cameraextension/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.cammidasservice",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/cammidasservice/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
         },
     },
     versions_with_info: [
@@ -91,6 +224,118 @@ aidl_interface {
     vendor_available: true,
     local_include_dir: "aidl",
     srcs: ["aidl/vendor/oplus/hardware/commondcs/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            sdk_version: "module_current",
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.communicationcenter",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/communicationcenter/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+        {
+            version: "2",
+            imports: [],
+        },
+
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.cwb",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/cwb/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+        {
+            version: "2",
+            imports: [],
+        },
+
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.ims",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/ims/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    frozen: true,
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.display.MixLut3D",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/display/MixLut3D/*.aidl"],
     stability: "vintf",
     owner: "oplus",
 
@@ -244,6 +489,31 @@ aidl_interface {
 }
 
 aidl_interface {
+    name: "vendor.oplus.hardware.pogo_keyboard",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/pogo_keyboard/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
     name: "vendor.oplus.hardware.radio",
     system_ext_specific: true,
     vendor_available: true,
@@ -258,6 +528,60 @@ aidl_interface {
         },
         java: {
             sdk_version: "module_current",
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+        {
+            version: "2",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.secure_element",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/secure_element/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.sendextcamcmd",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/sendextcamcmd/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
         },
     },
     versions_with_info: [
@@ -303,6 +627,137 @@ aidl_interface {
             imports: [],
         },
     ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.subsys_imsrtp",
+    system_ext_specific: true,
+    vendor_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/subsys_imsrtp/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    imports: [
+        "vendor.oplus.hardware.subsys-V5",
+    ],
+    versions_with_info: [
+        {
+            version: "1",
+            imports: ["vendor.oplus.hardware.subsys-V5"],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.subsys",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/subsys_interface/subsys/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    versions_with_info: [
+        {
+            version: "1",
+            imports: [],
+        },
+        {
+            version: "2",
+            imports: [],
+        },
+        {
+            version: "3",
+            imports: [],
+        },
+        {
+            version: "4",
+            imports: [],
+        },
+        {
+            version: "5",
+            imports: [],
+        },
+    ],
+}
+
+aidl_interface {
+    name: "vendor.oplus.hardware.subsys_radio",
+    system_ext_specific: true,
+    odm_available: true,
+    local_include_dir: "aidl",
+    srcs: ["aidl/vendor/oplus/hardware/subsys_interface/subsys_radio/*.aidl"],
+    stability: "vintf",
+    owner: "oplus",
+
+    backend: {
+        cpp: {
+            enabled: true,
+        },
+        java: {
+            enabled: false,
+        },
+    },
+    imports: [
+        "vendor.oplus.hardware.subsys-V5",
+    ],
+    versions_with_info: [
+        {
+            version: "1",
+            imports: ["vendor.oplus.hardware.subsys-V1"],
+        },
+        {
+            version: "2",
+            imports: ["vendor.oplus.hardware.subsys-V1"],
+        },
+        {
+            version: "3",
+            imports: ["vendor.oplus.hardware.subsys-V2"],
+        },
+        {
+            version: "4",
+            imports: ["vendor.oplus.hardware.subsys-V3"],
+        },
+        {
+            version: "5",
+            imports: ["vendor.oplus.hardware.subsys-V4"],
+        },
+        {
+            version: "6",
+            imports: ["vendor.oplus.hardware.subsys-V4"],
+        },
+        {
+            version: "7",
+            imports: ["vendor.oplus.hardware.subsys-V4"],
+        },
+        {
+            version: "8",
+            imports: ["vendor.oplus.hardware.subsys-V5"],
+        },
+        {
+            version: "9",
+            imports: ["vendor.oplus.hardware.subsys-V5"],
+        },
+
+    ],
+    frozen: true,
 }
 
 aidl_interface {
@@ -362,4 +817,77 @@ aidl_interface {
 
     ],
     frozen: true,
+}
+
+cc_defaults {
+    name: "vendor.oplus.hardware.ndk_platform_shim_defaults",
+    shared_libs: ["libbinder_ndk"],
+    system_ext_specific: true,
+    vendor_available: true,
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.camera.aon-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.camera.aon-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.cameraextension-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.cameraextension-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.cammidasservice-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.cammidasservice-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.commondcs-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.commondcs-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.display.MixLut3D-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.display.MixLut3D-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.olc2-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.olc2-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.osense.client-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.osense.client-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.performance-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.performance-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.pogo_keyboard-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.pogo_keyboard-V1-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.radio-V2-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.radio-V2-ndk"],
+}
+
+cc_library_shared {
+    name: "vendor.oplus.hardware.sendextcamcmd-V1-ndk_platform",
+    defaults: ["vendor.oplus.hardware.ndk_platform_shim_defaults"],
+    whole_static_libs: ["vendor.oplus.hardware.sendextcamcmd-V1-ndk"],
 }
