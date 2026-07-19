@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2026 The LineageOS Project
+ * SPDX-FileCopyrightText: 2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,10 +20,9 @@
 // with such a backward incompatible change, it has a high risk of breaking
 // later when a module using the interface is updated, e.g., Mainline modules.
 
-package vendor.oplus.hardware.display.MixLut3D;
+package vendor.oplus.hardware.charger;
 @VintfStability
-interface IMixLut3D {
-  int set(int panelId, int cmd);
-  int sencept(int panelId, int cmd, in int[] vals, inout int[] data);
-  void getDisplayLut(int panelId, out vendor.oplus.hardware.display.MixLut3D.Luts luts);
+parcelable testKitFeatureTestResult {
+  int ret;
+  String str;
 }

@@ -20,10 +20,9 @@
 // with such a backward incompatible change, it has a high risk of breaking
 // later when a module using the interface is updated, e.g., Mainline modules.
 
-package vendor.oplus.hardware.display.MixLut3D;
+package vendor.oplus.hardware.displaycolorfeature;
 @VintfStability
-interface IMixLut3D {
-  int set(int panelId, int cmd);
-  int sencept(int panelId, int cmd, in int[] vals, inout int[] data);
-  void getDisplayLut(int panelId, out vendor.oplus.hardware.display.MixLut3D.Luts luts);
+interface IDisplayColorFeature {
+  int getDisplayColorFeatureValue(vendor.oplus.hardware.displaycolorfeature.DisplayColorFeatureType type, out int[] values);
+  int setDisplayColorFeatureValue(vendor.oplus.hardware.displaycolorfeature.DisplayColorFeatureType type, in int[] values);
 }
