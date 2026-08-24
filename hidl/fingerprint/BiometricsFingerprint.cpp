@@ -44,6 +44,13 @@ Return<uint64_t> BiometricsFingerprint::preEnroll() {
 
 Return<RequestStatus> BiometricsFingerprint::enroll(const hidl_array<uint8_t, 69>& hat,
                                                     uint32_t gid, uint32_t timeoutSec) {
+    // Normally the fingerprint-ready state should have been already enabled by preEnroll(),
+    // but a "check enrolled fingerprints" session or a failed enrollment attempt will
+    // disable the fingerprint-ready state in turn.
+    // So we have to always enable it again before enrollment, otherwise the optical udfps will
+    // work in non-HBM mode and will be ineffective.
+    setDimlayerHbm(1);
+
     return mOplusBiometricsFingerprint->enroll(hat, gid, timeoutSec);
 }
 
