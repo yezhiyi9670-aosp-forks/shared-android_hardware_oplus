@@ -136,6 +136,18 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         wasUsingSpeaker = isUsingSpeaker
     }
 
+    private fun setTorchState(state: Boolean) {
+        val cameraId =
+            cameraManager.cameraIdList.firstOrNull { id ->
+                cameraManager
+                    .getCameraCharacteristics(id)
+                    .get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+            }
+        if (cameraId != null) {
+            cameraManager.setTorchMode(cameraId, state)
+        }
+    }
+
     private val broadcastReceiver =
         object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -226,12 +238,18 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         }
 
         var zenModesInvolved = false
+        var torchInvolved = false
         for (otherPosition in listOf(POSITION_TOP, POSITION_MIDDLE, POSITION_BOTTOM)) {
             when (getModeForPosition(otherPosition)) {
                 ZEN_PRIORITY_ONLY,
                 ZEN_TOTAL_SILENCE,
                 ZEN_ALARMS_ONLY -> {
                     zenModesInvolved = true
+                    break
+                }
+                TORCH_OFF,
+                TORCH_ON -> {
+                    torchInvolved = true
                     break
                 }
                 else -> { }
@@ -244,6 +262,9 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                     if (zenModesInvolved) {
                         setZenMode(Settings.Global.ZEN_MODE_OFF)
                     }
+                    if (torchInvolved) {
+                        setTorchState(false)
+                    }
                     audioManager.ringerModeInternal = mode
                     if (muteMedia) {
                         enterMuteSession()
@@ -254,27 +275,25 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                     if (zenModesInvolved) {
                         setZenMode(Settings.Global.ZEN_MODE_OFF)
                     }
+                    if (torchInvolved) {
+                        setTorchState(false)
+                    }
                     audioManager.ringerModeInternal = mode
                     exitMuteSession()
                 }
                 ZEN_PRIORITY_ONLY,
                 ZEN_TOTAL_SILENCE,
                 ZEN_ALARMS_ONLY -> {
+                    if (torchInvolved) {
+                        setTorchState(false)
+                    }
                     audioManager.ringerModeInternal = AudioManager.RINGER_MODE_NORMAL
                     setZenMode(mode - ZEN_OFFSET)
                     exitMuteSession()
                 }
                 TORCH_ON,
                 TORCH_OFF -> {
-                    val cameraId =
-                        cameraManager.cameraIdList.firstOrNull { id ->
-                            cameraManager
-                                .getCameraCharacteristics(id)
-                                .get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
-                        }
-                    if (cameraId != null) {
-                        cameraManager.setTorchMode(cameraId, mode == TORCH_ON)
-                    }
+                    setTorchState(mode == TORCH_ON)
                 }
             }
 
