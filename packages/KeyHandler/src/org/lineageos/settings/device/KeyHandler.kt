@@ -18,6 +18,7 @@ import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.util.Log
 import android.view.KeyEvent
 import com.android.internal.os.DeviceKeyHandler
 import java.io.File
@@ -40,7 +41,101 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
 
     private val executorService = Executors.newSingleThreadExecutor()
 
-    private var wasMuted = false
+    private var isInMuteSession = false
+    private var isMuteSessionBroken = false
+    private var preMuteMediaVolume = 0
+    private var wasUsingSpeaker = false
+
+    private fun isSpeakerCurrentMediaOutput(): Boolean {
+        return AudioSystem.getDevicesForStream(AudioSystem.STREAM_MUSIC) ==
+            AudioSystem.DEVICE_OUT_SPEAKER
+    }
+    private fun getSpeakerMediaVolume(): Int {
+        return AudioSystem.getStreamVolumeIndex(
+            AudioSystem.STREAM_MUSIC, AudioSystem.DEVICE_OUT_SPEAKER
+        )
+    }
+    private fun setSpeakerMediaVolume(volume: Int) {
+        AudioSystem.setStreamVolumeIndexAS(
+            AudioSystem.STREAM_MUSIC, volume, false, AudioSystem.DEVICE_OUT_SPEAKER
+        )
+    }
+    private fun muteMediaStream() {
+        audioManager.adjustVolume(AudioManager.ADJUST_MUTE, 0)
+    }
+    private fun unmuteMediaStream() {
+        audioManager.adjustVolume(AudioManager.ADJUST_UNMUTE, 0)
+    }
+
+    // The adjustVolume "stream mute" is per-stream and not per-device.
+    // Hence during a mute session,
+    // we use stream mute when current device is speaker (restore speaker media volume if needed),
+    // so that the user can unmute and restore to original volume by clicking Volume Up once.
+    // Otherwise always make the speaker media volume 0, and do not mute the stream to avoid affecting external devices.
+    // If any sign of manual unmuting found, consider mute session broken and do not further interfere with muting.
+    private fun enterMuteSession() {
+        if (isInMuteSession) {
+            return
+        }
+        isInMuteSession = true
+        isMuteSessionBroken = false
+        preMuteMediaVolume = getSpeakerMediaVolume()
+        wasUsingSpeaker = isSpeakerCurrentMediaOutput()
+        if (wasUsingSpeaker) {
+            muteMediaStream()
+        } else {
+            setSpeakerMediaVolume(0)
+        }
+    }
+    private fun tryRestoreMediaVolume() {
+        val mediaVolume = getSpeakerMediaVolume()
+        if (mediaVolume == 0 || mediaVolume == preMuteMediaVolume) {
+            // Don't know if getSpeakerMediaVolume() returns media volume masked by mute (0) or unmasked (preMuteMediaVolume)
+            setSpeakerMediaVolume(preMuteMediaVolume)
+        } else {
+            preMuteMediaVolume = mediaVolume
+            isMuteSessionBroken = true
+        }
+    }
+    private fun exitMuteSession() {
+        if (!isInMuteSession) {
+            return
+        }
+        isInMuteSession = false
+        if (isMuteSessionBroken) {
+            return
+        }
+        if (wasUsingSpeaker) {
+            unmuteMediaStream()
+        } else {
+            tryRestoreMediaVolume()
+        }
+    }
+    private fun onMediaStreamUnmuted() {
+        val isUsingSpeaker = isSpeakerCurrentMediaOutput()
+        if (!isInMuteSession) {
+            return
+        }
+        if (wasUsingSpeaker && isUsingSpeaker) {
+            isMuteSessionBroken = true
+        }
+    }
+    private fun onMediaStreamDeviceChanged() {
+        if (!isInMuteSession) {
+            return
+        }
+        val isUsingSpeaker = isSpeakerCurrentMediaOutput()
+        if (!wasUsingSpeaker && isUsingSpeaker && !isMuteSessionBroken) {
+            tryRestoreMediaVolume()
+            muteMediaStream()
+        }
+        if (wasUsingSpeaker && !isUsingSpeaker && !isMuteSessionBroken) {
+            unmuteMediaStream()
+            setSpeakerMediaVolume(0)
+        }
+        wasUsingSpeaker = isUsingSpeaker
+    }
+
     private val broadcastReceiver =
         object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -50,7 +145,14 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                         val state =
                             intent.getBooleanExtra(AudioManager.EXTRA_STREAM_VOLUME_MUTED, false)
                         if (stream == AudioSystem.STREAM_MUSIC && !state) {
-                            wasMuted = false
+                            executorService.submit { onMediaStreamUnmuted() }
+                        }
+                    }
+
+                    AudioManager.STREAM_DEVICES_CHANGED_ACTION -> {
+                        val stream = intent.getIntExtra(AudioManager.EXTRA_VOLUME_STREAM_TYPE, -1)
+                        if (stream == AudioSystem.STREAM_MUSIC) {
+                            executorService.submit { onMediaStreamDeviceChanged() }
                         }
                     }
 
@@ -64,6 +166,7 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
             broadcastReceiver,
             IntentFilter().apply {
                 addAction(AudioManager.STREAM_MUTE_CHANGED_ACTION)
+                addAction(AudioManager.STREAM_DEVICES_CHANGED_ACTION)
                 addAction(Intent.ACTION_BOOT_COMPLETED)
             },
         )
@@ -143,8 +246,7 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                     }
                     audioManager.ringerModeInternal = mode
                     if (muteMedia) {
-                        audioManager.adjustVolume(AudioManager.ADJUST_MUTE, 0)
-                        wasMuted = true
+                        enterMuteSession()
                     }
                 }
                 AudioManager.RINGER_MODE_VIBRATE,
@@ -153,18 +255,14 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                         setZenMode(Settings.Global.ZEN_MODE_OFF)
                     }
                     audioManager.ringerModeInternal = mode
-                    if (muteMedia && wasMuted) {
-                        audioManager.adjustVolume(AudioManager.ADJUST_UNMUTE, 0)
-                    }
+                    exitMuteSession()
                 }
                 ZEN_PRIORITY_ONLY,
                 ZEN_TOTAL_SILENCE,
                 ZEN_ALARMS_ONLY -> {
                     audioManager.ringerModeInternal = AudioManager.RINGER_MODE_NORMAL
                     setZenMode(mode - ZEN_OFFSET)
-                    if (muteMedia && wasMuted) {
-                        audioManager.adjustVolume(AudioManager.ADJUST_UNMUTE, 0)
-                    }
+                    exitMuteSession()
                 }
                 TORCH_ON,
                 TORCH_OFF -> {
