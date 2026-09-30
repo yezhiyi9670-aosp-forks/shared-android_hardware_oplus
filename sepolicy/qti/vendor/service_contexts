@@ -24,11 +24,17 @@ vendor.oplus.hardware.displaypanelfeature.IDisplayPanelFeature/default   u:objec
 # Display (Pixelworks)
 vendor.pixelworks.hardware.display.IIris/default    u:object_r:hal_display_iris_aidl_service:s0
 
+# EID
+vendor.oplus.hardware.eid.IEidDevice/default    u:object_r:hal_oplus_eid_service:s0
+
 # eSIM
 vendor.oplus.hardware.esim.IOplusEsim/default    u:object_r:hal_oplus_esim_aidl_service:s0
 
 # Fingerprint Pay
 vendor.oplus.hardware.biometrics.fingerprintpay.IFingerprintPay/default    u:object_r:hal_fingerprintpay_service:s0
+
+# NFC (TMS)
+vendor.tms.tmsnfc_aidl.ITmsNfc/default    u:object_r:hal_oplus_nfc_tms_service:s0
 
 # OLC
 vendor.oplus.hardware.olc2.IOplusLogCore/default    u:object_r:hal_oplus_olc_aidl_service:s0
@@ -55,6 +61,7 @@ vendor.oplus.hardware.radio.IRadioStable/OplusRadio1                 u:object_r:
 
 # Secure Element
 vendor.oplus.hardware.secure_element.ISecureElement/default    u:object_r:hal_secure_element_extend_service:s0
+vendor.tms.tmsese_aidl.ITmsEse/default                         u:object_r:hal_secure_element_extend_service:s0
 
 # Sensors
 vendor.oplus.hardware.oplusSensor.ISensorFeature/default    u:object_r:hal_oplus_sensor_aidl_service:s0
